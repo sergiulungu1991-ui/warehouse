@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import { PageContainer } from '@/components/ui/page-container';
 import { PageHeader } from '@/components/ui/page-header';
 import { ButtonLink } from '@/components/ui/button';
@@ -19,6 +19,7 @@ export const dynamic = 'force-dynamic';
 type PageProps = { params: Promise<{ id: string }> };
 
 async function loadItem(id: string) {
+  const supabase = await createClient();
   const { data } = await supabase
     .from('items')
     .select('*, categories(id, name)')
@@ -34,6 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ItemViewPage({ params }: PageProps) {
+  const supabase = await createClient();
   const { id } = await params;
   const item = await loadItem(id);
   if (!item) notFound();

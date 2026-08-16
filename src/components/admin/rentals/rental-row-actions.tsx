@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import { IconButton, IconButtonLink, RowActions } from '@/components/ui/icon-button';
 import { useConfirmDelete } from '@/components/ui/confirm-dialog';
 import { useToast } from '@/components/ui/toast';

@@ -1,7 +1,9 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/ui/icon';
-import { ADMIN_NAV_ITEMS, BACK_TO_SITE_ITEM } from './admin-nav-items';
+import { supabase } from '@/lib/supabase/client';
+import { ADMIN_NAV_ITEMS } from './admin-nav-items';
 import { SidebarNavLink } from './sidebar-nav-link';
 
 type AdminSidebarProps = {
@@ -17,6 +19,14 @@ export function AdminSidebar({
   onToggleCollapsed,
   onCloseMobile,
 }: AdminSidebarProps) {
+  const router = useRouter();
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  }
+
   return (
     <aside
       className={`fixed inset-y-0 left-0 z-40 flex shrink-0 flex-col border-r border-zinc-200 bg-white transition-[width,transform] duration-300 ease-in-out lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 dark:border-zinc-800 dark:bg-zinc-900 ${
@@ -75,11 +85,17 @@ export function AdminSidebar({
       </nav>
 
       <div className="border-t border-zinc-200 p-3 dark:border-zinc-800">
-        <SidebarNavLink
-          item={BACK_TO_SITE_ITEM}
-          isCollapsed={isCollapsed}
-          onNavigate={onCloseMobile}
-        />
+        <button
+          type="button"
+          onClick={handleLogout}
+          title={isCollapsed ? 'Log out' : undefined}
+          className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/60 dark:hover:text-zinc-50 ${
+            isCollapsed ? 'lg:justify-center lg:px-0' : ''
+          }`}
+        >
+          <Icon name="logout" className="h-5 w-5 shrink-0" />
+          <span className={isCollapsed ? 'lg:hidden' : ''}>Log out</span>
+        </button>
       </div>
     </aside>
   );

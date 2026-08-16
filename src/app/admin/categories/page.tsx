@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import { buildCategoryTree } from '@/lib/category-tree';
 import { CategoryTree } from '@/components/admin/category-tree';
 import { PageContainer } from '@/components/ui/page-container';
@@ -10,6 +10,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'Categories' };
 
 export default async function CategoriesPage() {
+  const supabase = await createClient();
   const [categories, itemRows] = await Promise.all([
     supabase.from('categories').select('*'),
     supabase.from('items').select('category_id'),

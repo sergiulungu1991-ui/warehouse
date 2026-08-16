@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import { ItemForm } from '@/components/admin/items/item-form';
 import { PageContainer } from '@/components/ui/page-container';
 import { PageHeader } from '@/components/ui/page-header';
@@ -10,12 +10,14 @@ export const dynamic = 'force-dynamic';
 type PageProps = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const supabase = await createClient();
   const { id } = await params;
   const { data } = await supabase.from('items').select('name').eq('id', id).single();
   return { title: data ? `Edit ${data.name}` : 'Edit item' };
 }
 
 export default async function EditItemPage({ params }: PageProps) {
+  const supabase = await createClient();
   const { id } = await params;
   const [item, categories, images] = await Promise.all([
     supabase.from('items').select('*').eq('id', id).single(),

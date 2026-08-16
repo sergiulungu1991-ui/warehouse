@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { createClient } from '@/lib/supabase/server';
 import type { Category, Item } from '@/types';
 
 export type ItemWithRelations = Item & {
@@ -44,6 +44,7 @@ function calcRentedByItem(rentalItems: ActiveRentalItem[]): Map<string, number> 
  * Images are embedded instead of queried per item (previously an N+1).
  */
 export async function fetchItemsSnapshot(): Promise<ItemsSnapshot> {
+  const supabase = await createClient();
   const [itemsResult, categoriesResult, rentalItemsResult] = await Promise.all([
     supabase
       .from('items')

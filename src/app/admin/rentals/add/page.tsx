@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import { RentalForm } from '@/components/admin/rentals/rental-form';
 import { PageContainer } from '@/components/ui/page-container';
 import { PageHeader } from '@/components/ui/page-header';
@@ -11,6 +11,7 @@ export const metadata: Metadata = { title: 'Add rental' };
 type PageProps = { searchParams: Promise<{ itemId?: string }> };
 
 export default async function AddRentalPage({ searchParams }: PageProps) {
+  const supabase = await createClient();
   const [{ data: items }, { itemId }] = await Promise.all([
     supabase.from('items').select('*').order('name'),
     searchParams,

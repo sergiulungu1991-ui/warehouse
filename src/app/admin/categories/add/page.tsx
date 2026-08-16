@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import { CategoryForm } from '@/components/admin/categories/category-form';
 import { PageContainer } from '@/components/ui/page-container';
 import { PageHeader } from '@/components/ui/page-header';
@@ -9,6 +9,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'Add category' };
 
 export default async function AddCategoryPage() {
+  const supabase = await createClient();
   const { data: categories } = await supabase.from('categories').select('*');
 
   return (

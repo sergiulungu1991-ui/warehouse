@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@/lib/supabase/server';
 import { StatCard } from '@/components/admin/stat-card';
 import { QuickActionCard } from '@/components/admin/quick-action-card';
 import { PageHeader } from '@/components/ui/page-header';
@@ -33,6 +33,7 @@ const QUICK_ACTIONS = [
 ] as const;
 
 export default async function AdminDashboard() {
+  const supabase = await createClient();
   const [categories, itemRows, rentals] = await Promise.all([
     supabase.from('categories').select('*'),
     supabase.from('items').select('category_id'),

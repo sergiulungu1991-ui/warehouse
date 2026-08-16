@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import type { Item, Rental } from '@/types';
 import { Card, CardBody } from '@/components/ui/card';
 import { Button, ButtonLink } from '@/components/ui/button';

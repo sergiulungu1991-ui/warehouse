@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { createClient } from '@/lib/supabase/server';
 
 const ACTIVE_RENTAL_STATUSES = ['Active', 'Overdue'] as const;
 
@@ -14,6 +14,7 @@ function getRentalStatus(rental: { status: 'Active' | 'Overdue' | 'Canceled' | '
 }
 
 export async function getAvailableByItemIds(ids: string[]): Promise<Record<string, number>> {
+  const supabase = await createClient();
   if (ids.length === 0) return {};
 
   const { data, error } = await supabase

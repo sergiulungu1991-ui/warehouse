@@ -13,10 +13,3 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { href: '/admin/categories', label: 'Categories', icon: 'tag' },
   { href: '/admin/rentals', label: 'Rentals', icon: 'calendar' },
 ];
-
-export const BACK_TO_SITE_ITEM: AdminNavItem = {
-  href: '/',
-  label: 'Back to Site',
-  icon: 'arrowLeft',
-  exact: true,
-};

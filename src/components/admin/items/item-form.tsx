@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import { buildCategoryTree, flattenCategoryTree, toCategoryKey } from '@/lib/category-tree';
 import type { Category, Item } from '@/types';
 import type { UploadedImage } from '@/hooks/use-image-upload';

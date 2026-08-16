@@ -46,7 +46,9 @@ export function AdminTopbar({ onOpenMenu }: { onOpenMenu: () => void }) {
         <Breadcrumbs items={crumbs} />
       </div>
 
-      <ThemeToggle />
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+      </div>
     </header>
   );
 }
