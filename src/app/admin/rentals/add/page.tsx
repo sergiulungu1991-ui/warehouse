@@ -1,0 +1,32 @@
+import type { Metadata } from 'next';
+import { supabase } from '@/lib/supabase';
+import { RentalForm } from '@/components/admin/rentals/rental-form';
+import { PageContainer } from '@/components/ui/page-container';
+import { PageHeader } from '@/components/ui/page-header';
+
+export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = { title: 'Add rental' };
+
+type PageProps = { searchParams: Promise<{ itemId?: string }> };
+
+export default async function AddRentalPage({ searchParams }: PageProps) {
+  const [{ data: items }, { itemId }] = await Promise.all([
+    supabase.from('items').select('*').order('name'),
+    searchParams,
+  ]);
+
+  // Deep link from an item page pre-selects that item
+  const initialLines = itemId ? [{ itemId, quantity: 1, returnedQuantity: 0 }] : [];
+
+  return (
+    <PageContainer>
+      <PageHeader
+        title="Add rental"
+        description="Register equipment leaving the warehouse"
+        breadcrumbs={[{ label: 'Rentals', href: '/admin/rentals' }, { label: 'Add' }]}
+      />
+      <RentalForm items={items ?? []} initialLines={initialLines} />
+    </PageContainer>
+  );
+}

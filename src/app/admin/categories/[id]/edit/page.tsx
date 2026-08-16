@@ -1,0 +1,40 @@
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import { CategoryForm } from '@/components/admin/categories/category-form';
+import { PageContainer } from '@/components/ui/page-container';
+import { PageHeader } from '@/components/ui/page-header';
+
+export const dynamic = 'force-dynamic';
+
+type PageProps = { params: Promise<{ id: string }> };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const { data } = await supabase.from('categories').select('name').eq('id', id).single();
+  return { title: data ? `Edit ${data.name}` : 'Edit category' };
+}
+
+export default async function EditCategoryPage({ params }: PageProps) {
+  const { id } = await params;
+  const [category, categories] = await Promise.all([
+    supabase.from('categories').select('*').eq('id', id).single(),
+    supabase.from('categories').select('*'),
+  ]);
+
+  if (!category.data) notFound();
+
+  return (
+    <PageContainer>
+      <PageHeader
+        title={`Edit ${category.data.name}`}
+        breadcrumbs={[
+          { label: 'Categories', href: '/admin/categories' },
+          { label: category.data.name, href: `/admin/categories/${id}` },
+          { label: 'Edit' },
+        ]}
+      />
+      <CategoryForm categories={categories.data ?? []} category={category.data} />
+    </PageContainer>
+  );
+}
