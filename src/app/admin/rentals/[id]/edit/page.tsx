@@ -34,15 +34,8 @@ export default async function EditRentalPage({ params }: PageProps) {
   }));
 
   return (
-    <PageContainer>
-      <PageHeader
-        title={`Edit rental · ${rental.data.renter_name}`}
-        breadcrumbs={[
-          { label: 'Rentals', href: '/admin/rentals' },
-          { label: rental.data.renter_name, href: `/admin/rentals/${id}` },
-          { label: 'Edit' },
-        ]}
-      />
+    <PageContainer narrow>
+      <PageHeader title={`Edit rental · ${rental.data.renter_name}`} />
       <RentalForm items={items.data ?? []} rental={rental.data} initialLines={lines} />
     </PageContainer>
   );

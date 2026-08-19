@@ -36,15 +36,8 @@ export default async function EditItemPage({ params }: PageProps) {
     .map(({ id: imageId, url }) => ({ id: imageId, url }));
 
   return (
-    <PageContainer>
-      <PageHeader
-        title={`Edit ${item.data.name}`}
-        breadcrumbs={[
-          { label: 'Items', href: '/admin/items' },
-          { label: item.data.name, href: `/admin/items/${id}` },
-          { label: 'Edit' },
-        ]}
-      />
+    <PageContainer narrow>
+      <PageHeader title={`Edit ${item.data.name}`} />
       <ItemForm
         categories={categories.data ?? []}
         item={item.data}

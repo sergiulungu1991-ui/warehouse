@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Box, Pencil } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { PageContainer } from '@/components/ui/page-container';
 import { PageHeader } from '@/components/ui/page-header';
 import { ButtonLink } from '@/components/ui/button';
 import { Card, CardBody, CardHeader } from '@/components/ui/card';
-import { DescriptionList } from '@/components/ui/description-list';
+import { DetailRow } from '@/components/ui/detail-panel';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Badge } from '@/components/ui/badge';
 import { RentalStatusBadge } from '@/components/admin/rentals/rental-status-badge';
@@ -47,78 +48,65 @@ export default async function RentalViewPage({ params }: PageProps) {
       <PageHeader
         title={rental.renter_name}
         description={`Rental #${rental.id}`}
-        breadcrumbs={[
-          { label: 'Rentals', href: '/admin/rentals' },
-          { label: rental.renter_name },
-        ]}
         actions={
           <>
             <RentalStatusBadge status={rental.status} overdue={overdue} />
-            <ButtonLink href={`/admin/rentals/${rental.id}/edit`} icon="edit">
+            <ButtonLink href={`/admin/rentals/${rental.id}/edit`} icon={Pencil} size="sm">
               Edit
             </ButtonLink>
           </>
         }
       />
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-3 lg:grid-cols-2">
         <Card>
           <CardHeader title="Renter" />
-          <CardBody>
-            <DescriptionList
-              items={[
-                { label: 'Name', value: rental.renter_name },
-                { label: 'Phone', value: rental.renter_phone || '—' },
-                { label: 'Email', value: rental.renter_email || '—' },
-              ]}
-            />
-          </CardBody>
+          <div>
+            <DetailRow label="Name">{rental.renter_name}</DetailRow>
+            <DetailRow label="Phone">{rental.renter_phone || '—'}</DetailRow>
+            <DetailRow label="Email">{rental.renter_email || '—'}</DetailRow>
+          </div>
         </Card>
 
         <Card>
           <CardHeader title="Schedule" />
-          <CardBody>
-            <DescriptionList
-              items={[
-                { label: 'Rented at', value: formatDate(rental.rented_at) ?? '—' },
-                {
-                  label: 'Expected return',
-                  value: (
-                    <span className={overdue ? 'font-medium text-red-600 dark:text-red-400' : ''}>
-                      {formatDate(rental.expected_return_at) ?? '—'}
-                      {overdue && ' · overdue'}
-                    </span>
-                  ),
-                },
-                { label: 'Returned at', value: formatDate(rental.returned_at) ?? 'Not returned' },
-                { label: 'Created', value: formatDate(rental.created_at) ?? '—' },
-              ]}
-            />
-          </CardBody>
+          <div>
+            <DetailRow label="Rented at">{formatDate(rental.rented_at) ?? '—'}</DetailRow>
+            <DetailRow label="Expected return">
+              <span className={overdue ? 'font-medium text-red-400' : undefined}>
+                {formatDate(rental.expected_return_at) ?? '—'}
+                {overdue && ' · overdue'}
+              </span>
+            </DetailRow>
+            <DetailRow label="Returned at">
+              {formatDate(rental.returned_at) ?? 'Not returned'}
+            </DetailRow>
+            <DetailRow label="Created">{formatDate(rental.created_at) ?? '—'}</DetailRow>
+          </div>
         </Card>
       </div>
 
-      <Card className="mt-6">
+      <Card className="mt-3">
         <CardHeader title="Rented items" description={`${lines.length} positions`} />
         {lines.length > 0 ? (
-          <CardBody className="space-y-2">
+          <div>
             {lines.map((line) => (
               <div
                 key={line.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-zinc-200 p-3 dark:border-zinc-800"
+                className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-3 py-2 last:border-b-0"
               >
                 <div className="min-w-0">
                   <Link
                     href={`/admin/items/${line.item_id}`}
-                    className="truncate text-sm font-medium text-zinc-900 hover:underline dark:text-zinc-50"
+                    className="truncate text-xs font-medium text-fg hover:underline"
                   >
                     {line.items?.name ?? `Item #${line.item_id}`}
                   </Link>
-                  <p className="truncate text-sm text-zinc-500 dark:text-zinc-400">
+                  <p className="truncate text-[11px] text-fg-subtle">
                     {[line.items?.brand, line.items?.model].filter(Boolean).join(' · ') || '—'}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <Badge>{line.quantity} taken</Badge>
                   <Badge tone={line.returned_quantity >= line.quantity ? 'success' : 'warning'}>
                     {line.returned_quantity} returned
@@ -126,17 +114,17 @@ export default async function RentalViewPage({ params }: PageProps) {
                 </div>
               </div>
             ))}
-          </CardBody>
+          </div>
         ) : (
-          <EmptyState icon="box" title="No items" description="This rental has no positions." />
+          <EmptyState icon={Box} title="No items" description="This rental has no positions." />
         )}
       </Card>
 
       {rental.notes && (
-        <Card className="mt-6">
+        <Card className="mt-3">
           <CardHeader title="Notes" />
           <CardBody>
-            <p className="whitespace-pre-wrap text-sm text-zinc-700 dark:text-zinc-300">
+            <p className="whitespace-pre-wrap text-xs leading-relaxed text-fg-muted">
               {rental.notes}
             </p>
           </CardBody>

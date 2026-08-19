@@ -1,9 +1,10 @@
-import { Icon, type IconName } from '@/components/ui/icon';
+import { Box, Calendar, Check, type LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type Tile = {
   label: string;
   value: number;
-  icon: IconName;
+  icon: LucideIcon;
   className: string;
 };
 
@@ -20,44 +21,39 @@ export function ItemStockSummary({ total, available }: ItemStockSummaryProps) {
     {
       label: 'In stock',
       value: total,
-      icon: 'box',
-      className: 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300',
+      icon: Box,
+      className: 'border-line bg-surface-300 text-fg-muted',
     },
     {
       label: 'Rented out',
       value: rented,
-      icon: 'calendar',
-      className: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
+      icon: Calendar,
+      className: 'border-amber-900/40 bg-amber-950/40 text-amber-400',
     },
     {
       label: 'Available',
       value: available,
-      icon: 'check',
+      icon: Check,
       className:
         available > 0
-          ? 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300'
-          : 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300',
+          ? 'border-accent/30 bg-accent-surface text-accent-text'
+          : 'border-red-900/40 bg-red-950/40 text-red-400',
     },
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <div className="grid grid-cols-3 gap-2">
       {tiles.map((tile) => (
-        <div
-          key={tile.label}
-          className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900"
-        >
+        <div key={tile.label} className="rounded-md border border-line bg-surface-200 p-2.5">
           <div className="flex items-center gap-2">
-            <span className={`rounded-lg p-1.5 ${tile.className}`}>
-              <Icon name={tile.icon} className="h-4 w-4" />
+            <span className={cn('rounded border p-1', tile.className)}>
+              <tile.icon className="h-3 w-3" />
             </span>
-            <span className="truncate text-xs font-medium text-zinc-500 dark:text-zinc-400">
+            <span className="truncate text-[11px] font-medium uppercase tracking-wider text-fg-subtle">
               {tile.label}
             </span>
           </div>
-          <p className="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-            {tile.value}
-          </p>
+          <p className="mt-1.5 font-mono text-xl font-semibold text-fg">{tile.value}</p>
         </div>
       ))}
     </div>

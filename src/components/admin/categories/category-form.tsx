@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import {
   buildCategoryTree,
@@ -94,7 +95,7 @@ export function CategoryForm({ categories, category }: CategoryFormProps) {
 
   return (
     <Card>
-      <CardBody className="lg:p-6">
+      <CardBody>
         <form onSubmit={handleSubmit} noValidate>
           <FormSection title="Details" description="Name and short description of the category.">
             <FormField label="Name" required error={errors.name}>
@@ -153,7 +154,7 @@ export function CategoryForm({ categories, category }: CategoryFormProps) {
             {category && (
               <Button
                 variant="danger"
-                icon="trash"
+                icon={Trash2}
                 onClick={handleDelete}
                 loading={deleting}
                 className="sm:mr-auto"

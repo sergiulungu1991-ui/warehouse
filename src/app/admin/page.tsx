@@ -1,9 +1,11 @@
+import { Boxes, Calendar, Package, Tags, TriangleAlert } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { StatCard } from '@/components/admin/stat-card';
 import { QuickActionCard } from '@/components/admin/quick-action-card';
-import { PageHeader } from '@/components/ui/page-header';
 import { PageContainer } from '@/components/ui/page-container';
+import { SectionLabel } from '@/components/ui/card';
 import { ErrorState } from '@/components/ui/error-state';
+import { isRentalOverdue } from '@/components/admin/rentals/rental-utils';
 
 // Admin data must never be served from the build-time snapshot
 export const dynamic = 'force-dynamic';
@@ -11,81 +13,79 @@ export const dynamic = 'force-dynamic';
 const QUICK_ACTIONS = [
   {
     href: '/admin/items/add',
-    title: 'Add New Item',
-    description: 'Create a new item in inventory',
-    icon: 'plus',
-    tone: 'green',
+    title: 'Add item',
+    description: 'Register a new product in the inventory',
+    icon: Package,
   },
   {
     href: '/admin/categories/add',
-    title: 'Add Category',
-    description: 'Create a new category',
-    icon: 'tag',
-    tone: 'blue',
+    title: 'Add category',
+    description: 'Extend the category hierarchy',
+    icon: Tags,
   },
   {
     href: '/admin/rentals/add',
-    title: 'Add Rental',
-    description: 'Create a new rental agreement',
-    icon: 'calendar',
-    tone: 'purple',
+    title: 'Add rental',
+    description: 'Check equipment out of the warehouse',
+    icon: Calendar,
   },
 ] as const;
 
-export default async function AdminDashboard() {
+export default async function AdminOverview() {
   const supabase = await createClient();
   const [categories, itemRows, rentals] = await Promise.all([
-    supabase.from('categories').select('*'),
-    supabase.from('items').select('category_id'),
-    supabase.from('rentals').select('*', { count: 'exact', head: true }),
+    supabase.from('categories').select('id', { count: 'exact', head: true }),
+    supabase.from('items').select('id', { count: 'exact', head: true }),
+    supabase.from('rentals').select('*'),
   ]);
 
   const failure = categories.error ?? itemRows.error ?? rentals.error;
+  const allRentals = rentals.data ?? [];
+  const active = allRentals.filter(
+    (rental) => rental.status === 'Active' || rental.status === 'Overdue',
+  );
+  const overdue = active.filter(isRentalOverdue);
 
   return (
     <PageContainer>
-      <PageHeader title="Dashboard" description="Overview of your warehouse inventory" />
-
       {failure && (
-        <div className="mb-6">
-          <ErrorState title="Could not load dashboard data" message={failure.message} />
+        <div className="mb-3">
+          <ErrorState title="Could not load overview data" message={failure.message} />
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+      <SectionLabel>Inventory</SectionLabel>
+      <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+        <StatCard href="/admin/items" label="Items" value={itemRows.count ?? 0} icon={Boxes} />
         <StatCard
           href="/admin/categories"
           label="Categories"
-          value={categories.data?.length ?? 0}
-          icon="tag"
-          tone="blue"
-        />
-        <StatCard
-          href="/admin/items"
-          label="Items"
-          value={itemRows.data?.length ?? 0}
-          icon="box"
-          tone="green"
+          value={categories.count ?? 0}
+          icon={Tags}
         />
         <StatCard
           href="/admin/rentals"
-          label="Active Rentals"
-          value={rentals.count ?? 0}
-          icon="calendar"
-          tone="purple"
+          label="Active rentals"
+          value={active.length}
+          icon={Calendar}
+          tone="accent"
+        />
+        <StatCard
+          href="/admin/rentals"
+          label="Overdue"
+          value={overdue.length}
+          icon={TriangleAlert}
+          tone={overdue.length > 0 ? 'danger' : 'default'}
+          hint={overdue.length > 0 ? 'Needs attention' : 'All on schedule'}
         />
       </div>
 
-      <section className="mt-6 lg:mt-8">
-        <h2 className="mb-4 text-lg font-semibold text-zinc-900 lg:text-xl dark:text-zinc-50">
-          Quick Actions
-        </h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {QUICK_ACTIONS.map((action) => (
-            <QuickActionCard key={action.href} {...action} />
-          ))}
-        </div>
-      </section>
+      <SectionLabel>Quick actions</SectionLabel>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {QUICK_ACTIONS.map((action) => (
+          <QuickActionCard key={action.href} {...action} />
+        ))}
+      </div>
     </PageContainer>
   );
 }

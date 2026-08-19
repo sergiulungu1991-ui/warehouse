@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
 import { buildCategoryTree } from '@/lib/category-tree';
-import { CategoryTree } from '@/components/admin/category-tree';
-import { PageContainer } from '@/components/ui/page-container';
+import { CategoriesView } from '@/components/admin/categories/categories-view';
 import { ErrorState } from '@/components/ui/error-state';
 
 export const dynamic = 'force-dynamic';
@@ -17,18 +16,13 @@ export default async function CategoriesPage() {
   ]);
 
   const failure = categories.error ?? itemRows.error;
+  if (failure) return <ErrorState title="Could not load categories" message={failure.message} />;
+
   const itemCountByCategory = (itemRows.data ?? []).reduce<Record<string, number>>((acc, item) => {
-    acc[item.category_id] = (acc[item.category_id] ?? 0) + 1;
+    const key = String(item.category_id);
+    acc[key] = (acc[key] ?? 0) + 1;
     return acc;
   }, {});
 
-  return (
-    <PageContainer fullWidth>
-      {failure ? (
-        <ErrorState title="Could not load categories" message={failure.message} />
-      ) : (
-        <CategoryTree nodes={buildCategoryTree(categories.data ?? [], itemCountByCategory)} />
-      )}
-    </PageContainer>
-  );
+  return <CategoriesView nodes={buildCategoryTree(categories.data ?? [], itemCountByCategory)} />;
 }

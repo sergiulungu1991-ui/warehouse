@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import type { Item, Rental } from '@/types';
 import { Card, CardBody } from '@/components/ui/card';
@@ -120,7 +121,7 @@ export function RentalForm({ items, rental, initialLines = [] }: RentalFormProps
 
   return (
     <Card>
-      <CardBody className="lg:p-6">
+      <CardBody>
         <form onSubmit={handleSubmit} noValidate>
           <FormSection title="Renter" description="Who is taking the equipment out.">
             <FormField label="Full name" required error={errors.renterName}>
@@ -241,7 +242,7 @@ export function RentalForm({ items, rental, initialLines = [] }: RentalFormProps
             {rental && (
               <Button
                 variant="danger"
-                icon="trash"
+                icon={Trash2}
                 onClick={handleDelete}
                 loading={deleting}
                 className="sm:mr-auto"

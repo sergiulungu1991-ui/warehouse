@@ -1,11 +1,11 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { Plus, Trash2 } from 'lucide-react';
 import type { Item } from '@/types';
-import { SearchInput } from '@/components/ui/form-controls';
+import { CONTROL_CLASS, SearchInput } from '@/components/ui/form-controls';
 import { Button } from '@/components/ui/button';
-import { Icon } from '@/components/ui/icon';
-import { CONTROL_CLASS } from '@/components/ui/form-controls';
+import { cn } from '@/lib/utils';
 import type { RentalLine } from './rental-form-state';
 
 type RentalItemsPickerProps = {
@@ -47,7 +47,7 @@ export function RentalItemsPicker({
     onChange(lines.map((line) => (line.itemId === itemId ? { ...line, ...patch } : line)));
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       <div>
         <SearchInput
           value={query}
@@ -57,14 +57,24 @@ export function RentalItemsPicker({
         />
 
         {available.length > 0 && (
-          <ul className="mt-2 divide-y divide-zinc-200 overflow-hidden rounded-xl border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
+          <ul className="mt-1.5 overflow-hidden rounded-md border border-line">
             {available.map((item) => (
-              <li key={item.id} className="flex items-center justify-between gap-3 px-3 py-2">
-                <span className="min-w-0 truncate text-sm text-zinc-700 dark:text-zinc-300">
+              <li
+                key={item.id}
+                className="flex items-center justify-between gap-2 border-b border-line px-2 py-1.5 last:border-b-0"
+              >
+                <span className="min-w-0 truncate text-xs text-fg-muted">
                   {item.name}
-                  <span className="ml-2 text-xs text-zinc-400">{item.quantity} in stock</span>
+                  <span className="ml-2 font-mono text-[11px] text-fg-subtle">
+                    {item.quantity} in stock
+                  </span>
                 </span>
-                <Button size="sm" variant="secondary" icon="plus" onClick={() => addLine(String(item.id))}>
+                <Button
+                  size="xs"
+                  variant="secondary"
+                  icon={Plus}
+                  onClick={() => addLine(String(item.id))}
+                >
                   Add
                 </Button>
               </li>
@@ -74,17 +84,17 @@ export function RentalItemsPicker({
       </div>
 
       {lines.length > 0 && (
-        <ul className="space-y-2">
+        <ul className="overflow-hidden rounded-md border border-line">
           {lines.map((line) => (
             <li
               key={line.itemId}
-              className="flex flex-wrap items-center gap-3 rounded-xl border border-zinc-200 p-3 dark:border-zinc-800"
+              className="flex flex-wrap items-center gap-2 border-b border-line bg-surface-300 px-2 py-1.5 last:border-b-0"
             >
-              <span className="min-w-0 flex-1 truncate text-sm font-medium text-zinc-900 dark:text-zinc-50">
+              <span className="min-w-0 flex-1 truncate text-xs font-medium text-fg">
                 {itemById.get(line.itemId)?.name ?? `Item #${line.itemId}`}
               </span>
 
-              <label className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+              <label className="flex items-center gap-1.5 text-[11px] text-fg-subtle">
                 Qty
                 <input
                   type="number"
@@ -93,12 +103,12 @@ export function RentalItemsPicker({
                   onChange={(event) =>
                     updateLine(line.itemId, { quantity: Math.max(1, Number(event.target.value)) })
                   }
-                  className={`${CONTROL_CLASS} w-20`}
+                  className={cn(CONTROL_CLASS, 'w-16')}
                 />
               </label>
 
               {showReturned && (
-                <label className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+                <label className="flex items-center gap-1.5 text-[11px] text-fg-subtle">
                   Returned
                   <input
                     type="number"
@@ -110,7 +120,7 @@ export function RentalItemsPicker({
                         returnedQuantity: Math.max(0, Number(event.target.value)),
                       })
                     }
-                    className={`${CONTROL_CLASS} w-20`}
+                    className={cn(CONTROL_CLASS, 'w-16')}
                   />
                 </label>
               )}
@@ -119,16 +129,16 @@ export function RentalItemsPicker({
                 type="button"
                 aria-label="Remove item"
                 onClick={() => onChange(lines.filter((entry) => entry.itemId !== line.itemId))}
-                className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-red-600 dark:hover:bg-zinc-800"
+                className="flex h-6 w-6 items-center justify-center rounded text-fg-subtle transition-colors hover:bg-surface-400 hover:text-red-400"
               >
-                <Icon name="trash" className="h-4 w-4" />
+                <Trash2 className="h-3.5 w-3.5" />
               </button>
             </li>
           ))}
         </ul>
       )}
 
-      {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
+      {error && <p className="text-[11px] text-red-400">{error}</p>}
     </div>
   );
 }

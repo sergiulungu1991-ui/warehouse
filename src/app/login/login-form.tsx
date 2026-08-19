@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
-import { CONTROL_CLASS } from '@/components/ui/form-controls';
+import { FormField, TextInput } from '@/components/ui/form';
 
 type LoginFormProps = {
   next?: string;
@@ -39,40 +39,40 @@ export function LoginForm({ next }: LoginFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="email" className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          required
-          autoComplete="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          className={CONTROL_CLASS}
-        />
-      </div>
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <FormField label="Email" required>
+        {(props) => (
+          <TextInput
+            {...props}
+            type="email"
+            required
+            autoComplete="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
+        )}
+      </FormField>
 
-      <div>
-        <label htmlFor="password" className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          required
-          autoComplete="current-password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          className={CONTROL_CLASS}
-        />
-      </div>
+      <FormField label="Password" required>
+        {(props) => (
+          <TextInput
+            {...props}
+            type="password"
+            required
+            autoComplete="current-password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
+        )}
+      </FormField>
 
-      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {error && (
+        <p role="alert" className="text-[11px] text-red-400">
+          {error}
+        </p>
+      )}
 
-      <Button type="submit" loading={loading} className="w-full">
+      <Button type="submit" size="md" loading={loading} className="w-full">
         Sign in
       </Button>
     </form>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { Icon } from '@/components/ui/icon';
+import { ArrowLeft, ChevronRight, X } from 'lucide-react';
 
 type ImageLightboxProps = {
   images: { url: string }[];
@@ -41,7 +41,7 @@ export function ImageLightbox({ images, index, name, onClose, onNavigate }: Imag
         aria-label="Close"
         className="absolute right-4 top-4 rounded-lg p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white"
       >
-        <Icon name="close" className="h-6 w-6" />
+        <X className="h-6 w-6" />
       </button>
 
       {images.length > 1 && (
@@ -95,7 +95,7 @@ function NavButton({
       }}
       className={`absolute ${side === 'left' ? 'left-4' : 'right-4'} rounded-full bg-white/10 p-3 text-white transition-colors hover:bg-white/20`}
     >
-      <Icon name={side === 'left' ? 'arrowLeft' : 'chevronRight'} className="h-5 w-5" />
+      {side === 'left' ? <ArrowLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
     </button>
   );
 }

@@ -1,17 +1,21 @@
 import type { ReactNode } from 'react';
+import { cn } from '@/lib/utils';
 
 type PageContainerProps = {
   children: ReactNode;
-  /** Edge-to-edge layout with tighter gutters, for data-dense pages */
-  fullWidth?: boolean;
+  /** Constrain the content width, for forms and reading-oriented pages */
+  narrow?: boolean;
   className?: string;
 };
 
-/** Consistent page gutters and max width across the whole app */
-export function PageContainer({ children, fullWidth = false, className = '' }: PageContainerProps) {
-  const layout = fullWidth
-    ? 'w-full px-3 py-4 sm:px-4'
-    : 'mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10';
-
-  return <div className={`${layout} ${className}`}>{children}</div>;
+/**
+ * Scrollable page body inside the admin shell.
+ * Data-dense pages render edge to edge; `narrow` centers forms and detail views.
+ */
+export function PageContainer({ children, narrow = false, className = '' }: PageContainerProps) {
+  return (
+    <div className={cn('h-full overflow-y-auto', className)}>
+      <div className={cn('w-full p-3', narrow && 'mx-auto max-w-3xl')}>{children}</div>
+    </div>
+  );
 }

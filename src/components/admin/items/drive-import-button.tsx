@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { ExternalLink } from 'lucide-react';
 import { useGooglePicker, type GoogleDriveFile } from '@/hooks/use-google-picker';
 import { Button } from '@/components/ui/button';
 
@@ -55,7 +56,7 @@ export function DriveImportButton({ onUploaded, onError }: DriveImportButtonProp
     <Button
       type="button"
       variant="secondary"
-      icon="external"
+      icon={ExternalLink}
       loading={busy || loading}
       onClick={open}
     >

@@ -3,33 +3,114 @@
 /* Dark mode is driven by the `.dark` class so the user can override the OS setting */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * Surface scale, from the page background up to raised panels.
+ * Naming follows elevation, not color, so the same tokens work in both themes.
+ */
 :root {
-  --background: #fafafa;
-  --foreground: #18181b;
+  --surface-100: #ffffff;
+  --surface-200: #fafafa;
+  --surface-300: #f4f4f5;
+  --surface-400: #ebebed;
+  --border-default: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --text-default: #18181b;
+  --text-muted: #71717a;
+  --text-subtle: #a1a1aa;
+  --accent: #16a34a;
+  --accent-hover: #15803d;
+  --accent-foreground: #ffffff;
+  --accent-surface: #dcfce7;
+  --accent-text: #15803d;
+
+  --background: var(--surface-200);
+  --foreground: var(--text-default);
 }
 
 .dark {
-  --background: #09090b;
-  --foreground: #fafafa;
+  --surface-100: #0a0a0a;
+  --surface-200: #111112;
+  --surface-300: #18181a;
+  --surface-400: #202023;
+  --border-default: #262629;
+  --border-strong: #34343a;
+  --text-default: #ededee;
+  --text-muted: #8f8f96;
+  --text-subtle: #6b6b73;
+  --accent: #24b47e;
+  --accent-hover: #2ac98d;
+  --accent-foreground: #04160d;
+  --accent-surface: #0f2a1e;
+  --accent-text: #4ade80;
+
+  --background: var(--surface-100);
+  --foreground: var(--text-default);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-surface-100: var(--surface-100);
+  --color-surface-200: var(--surface-200);
+  --color-surface-300: var(--surface-300);
+  --color-surface-400: var(--surface-400);
+
+  --color-line: var(--border-default);
+  --color-line-strong: var(--border-strong);
+
+  --color-fg: var(--text-default);
+  --color-fg-muted: var(--text-muted);
+  --color-fg-subtle: var(--text-subtle);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-foreground);
+  --color-accent-surface: var(--accent-surface);
+  --color-accent-text: var(--accent-text);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Compact developer-dashboard radii */
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Consistent focus ring across every interactive element */
 :focus-visible {
-  outline: 2px solid var(--color-blue-500);
-  outline-offset: 2px;
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Thin scrollbars keep dense panels from losing horizontal space */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 4px;
 }
 
 @keyframes toast-in {
@@ -43,6 +124,12 @@ body {
   from {
     opacity: 0;
     transform: translateY(8px) scale(0.97);
+  }
+}
+
+@keyframes panel-in {
+  from {
+    transform: translateX(100%);
   }
 }
 

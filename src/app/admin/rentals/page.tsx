@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
-import { RentalsList } from '@/components/admin/rentals/rentals-list';
-import { PageContainer } from '@/components/ui/page-container';
+import { RentalsView } from '@/components/admin/rentals/rentals-view';
 import { ErrorState } from '@/components/ui/error-state';
 
 export const dynamic = 'force-dynamic';
@@ -15,13 +14,7 @@ export default async function RentalsPage() {
     .select('*')
     .order('created_at', { ascending: false });
 
-  return (
-    <PageContainer fullWidth>
-      {error ? (
-        <ErrorState title="Could not load rentals" message={error.message} />
-      ) : (
-        <RentalsList rentals={rentals ?? []} />
-      )}
-    </PageContainer>
-  );
+  if (error) return <ErrorState title="Could not load rentals" message={error.message} />;
+
+  return <RentalsView rentals={rentals ?? []} />;
 }

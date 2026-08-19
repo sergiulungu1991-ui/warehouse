@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Calendar, Pencil } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { PageContainer } from '@/components/ui/page-container';
 import { PageHeader } from '@/components/ui/page-header';
 import { ButtonLink } from '@/components/ui/button';
-import { Card, CardBody, CardHeader } from '@/components/ui/card';
-import { DescriptionList } from '@/components/ui/description-list';
+import { Card, CardHeader } from '@/components/ui/card';
+import { DetailRow } from '@/components/ui/detail-panel';
 import { ItemGallery } from '@/components/admin/items/item-gallery';
 import { ItemStockSummary } from '@/components/admin/items/item-stock-summary';
 import { ItemRentalSections } from '@/components/admin/items/item-rental-history';
@@ -61,66 +62,61 @@ export default async function ItemViewPage({ params }: PageProps) {
   });
 
   return (
-    <PageContainer fullWidth>
+    <PageContainer>
       <PageHeader
         title={item.name}
+        description={item.categories?.name}
         actions={
           <>
             <ButtonLink
               href={`/admin/items/${item.id}/edit`}
               variant="secondary"
-              icon="edit"
+              icon={Pencil}
               size="sm"
             >
               Edit
             </ButtonLink>
-            <ButtonLink href={`/admin/rentals/add?itemId=${item.id}`} icon="calendar" size="sm">
+            <ButtonLink href={`/admin/rentals/add?itemId=${item.id}`} icon={Calendar} size="sm">
               Create rental
             </ButtonLink>
           </>
         }
       />
 
-      <div className="grid gap-6 lg:grid-cols-12">
-        <div className="space-y-6 lg:col-span-4 xl:col-span-3">
+      <div className="grid gap-3 lg:grid-cols-12">
+        <div className="space-y-3 lg:col-span-4 xl:col-span-3">
           <ItemGallery images={itemImages} name={item.name} />
 
           <Card>
             <CardHeader title="Details" />
-            <CardBody>
-              <DescriptionList
-                items={[
-                  { label: 'Brand', value: item.brand || '—' },
-                  { label: 'Model', value: item.model || '—' },
-                  {
-                    label: 'Category',
-                    value: item.categories ? (
-                      <Link
-                        href={`/admin/categories/${item.categories.id}`}
-                        className="text-blue-600 hover:underline dark:text-blue-400"
-                      >
-                        {item.categories.name}
-                      </Link>
-                    ) : (
-                      'No category'
-                    ),
-                  },
-                  { label: 'Created', value: formatDate(item.created_at) ?? '—' },
-                  {
-                    label: 'Description',
-                    value: item.description ? (
-                      <p className="whitespace-pre-line">{item.description}</p>
-                    ) : (
-                      '—'
-                    ),
-                  },
-                ]}
-              />
-            </CardBody>
+            <div>
+              <DetailRow label="Brand">{item.brand || '—'}</DetailRow>
+              <DetailRow label="Model">{item.model || '—'}</DetailRow>
+              <DetailRow label="Category">
+                {item.categories ? (
+                  <Link
+                    href={`/admin/categories/${item.categories.id}`}
+                    className="text-accent-text hover:underline"
+                  >
+                    {item.categories.name}
+                  </Link>
+                ) : (
+                  'No category'
+                )}
+              </DetailRow>
+              <DetailRow label="Created">{formatDate(item.created_at) ?? '—'}</DetailRow>
+              <DetailRow label="Description">
+                {item.description ? (
+                  <span className="whitespace-pre-line">{item.description}</span>
+                ) : (
+                  '—'
+                )}
+              </DetailRow>
+            </div>
           </Card>
         </div>
 
-        <div className="lg:col-span-8 xl:col-span-9">
+        <div className="space-y-3 lg:col-span-8 xl:col-span-9">
           <ItemStockSummary total={item.quantity} available={available} />
           <ItemRentalSections rentals={rentals} />
         </div>

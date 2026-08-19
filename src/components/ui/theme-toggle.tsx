@@ -1,12 +1,13 @@
 'use client';
 
+import { Monitor, Moon, Sun, type LucideIcon } from 'lucide-react';
 import { useTheme, type Theme } from '@/hooks/use-theme';
-import { Icon, type IconName } from './icon';
+import { cn } from '@/lib/utils';
 
-const OPTIONS: { value: Theme; label: string; icon: IconName }[] = [
-  { value: 'light', label: 'Light', icon: 'sun' },
-  { value: 'dark', label: 'Dark', icon: 'moon' },
-  { value: 'system', label: 'System', icon: 'monitor' },
+const OPTIONS: { value: Theme; label: string; icon: LucideIcon }[] = [
+  { value: 'light', label: 'Light', icon: Sun },
+  { value: 'dark', label: 'Dark', icon: Moon },
+  { value: 'system', label: 'System', icon: Monitor },
 ];
 
 export function ThemeToggle() {
@@ -16,24 +17,25 @@ export function ThemeToggle() {
     <div
       role="radiogroup"
       aria-label="Color theme"
-      className="flex items-center gap-0.5 rounded-full border border-zinc-200 bg-white p-0.5 dark:border-zinc-800 dark:bg-zinc-900"
+      className="flex items-center gap-0.5 rounded-md border border-line bg-surface-200 p-0.5"
     >
-      {OPTIONS.map((option) => (
+      {OPTIONS.map(({ value, label, icon: Icon }) => (
         <button
-          key={option.value}
+          key={value}
           type="button"
           role="radio"
-          aria-checked={theme === option.value}
-          aria-label={option.label}
-          title={option.label}
-          onClick={() => setTheme(option.value)}
-          className={`rounded-full p-1.5 transition-colors ${
-            theme === option.value
-              ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-              : 'text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
-          }`}
+          aria-checked={theme === value}
+          aria-label={label}
+          title={label}
+          onClick={() => setTheme(value)}
+          className={cn(
+            'flex h-5 w-5 items-center justify-center rounded transition-colors',
+            theme === value
+              ? 'bg-surface-400 text-fg'
+              : 'text-fg-subtle hover:bg-surface-300 hover:text-fg',
+          )}
         >
-          <Icon name={option.icon} className="h-4 w-4" />
+          <Icon className="h-3 w-3" />
         </button>
       ))}
     </div>

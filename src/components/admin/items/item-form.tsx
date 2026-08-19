@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import { buildCategoryTree, flattenCategoryTree, toCategoryKey } from '@/lib/category-tree';
 import type { Category, Item } from '@/types';
@@ -117,7 +118,7 @@ export function ItemForm({ categories, item, initialImages = [] }: ItemFormProps
 
   return (
     <Card>
-      <CardBody className="lg:p-6">
+      <CardBody>
         <form onSubmit={handleSubmit} noValidate>
           <FormSection title="Basics" description="What is this item and where does it belong?">
             <FormField label="Name" required error={errors.name}>
@@ -162,7 +163,7 @@ export function ItemForm({ categories, item, initialImages = [] }: ItemFormProps
           </FormSection>
 
           <FormSection title="Specification" description="Optional manufacturer details and stock.">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2">
               <FormField label="Brand" error={errors.brand}>
                 {(props) => (
                   <TextInput
@@ -207,7 +208,7 @@ export function ItemForm({ categories, item, initialImages = [] }: ItemFormProps
             {item && (
               <Button
                 variant="danger"
-                icon="trash"
+                icon={Trash2}
                 onClick={handleDelete}
                 loading={deleting}
                 className="sm:mr-auto"

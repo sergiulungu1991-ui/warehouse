@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Pencil, Plus, Tag } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { PageContainer } from '@/components/ui/page-container';
 import { PageHeader } from '@/components/ui/page-header';
 import { ButtonLink } from '@/components/ui/button';
 import { Card, CardBody, CardHeader } from '@/components/ui/card';
-import { DescriptionList } from '@/components/ui/description-list';
+import { DetailRow } from '@/components/ui/detail-panel';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ItemQuantityBadge } from '@/components/admin/item-quantity-badge';
 import { formatDate } from '@/components/admin/rentals/rental-utils';
@@ -56,122 +57,107 @@ export default async function CategoryViewPage({ params }: PageProps) {
       <PageHeader
         title={category.name}
         description={category.description ?? undefined}
-        breadcrumbs={[
-          { label: 'Categories', href: '/admin/categories' },
-          { label: category.name },
-        ]}
         actions={
-          <ButtonLink href={`/admin/categories/${category.id}/edit`} icon="edit">
+          <ButtonLink href={`/admin/categories/${category.id}/edit`} icon={Pencil} size="sm">
             Edit
           </ButtonLink>
         }
       />
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-3 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader title="Details" />
-          <CardBody>
-            <DescriptionList
-              items={[
-                {
-                  label: 'Parent category',
-                  value: parent.data ? (
-                    <Link
-                      href={`/admin/categories/${parent.data.id}`}
-                      className="text-blue-600 hover:underline dark:text-blue-400"
-                    >
-                      {parent.data.name}
-                    </Link>
-                  ) : (
-                    'Root category'
-                  ),
-                },
-                { label: 'Description', value: category.description || '—' },
-                { label: 'Created', value: formatDate(category.created_at) },
-                { label: 'Last updated', value: formatDate(category.updated_at) },
-              ]}
-            />
-          </CardBody>
+          <div>
+            <DetailRow label="Parent category">
+              {parent.data ? (
+                <Link
+                  href={`/admin/categories/${parent.data.id}`}
+                  className="text-accent-text hover:underline"
+                >
+                  {parent.data.name}
+                </Link>
+              ) : (
+                'Root category'
+              )}
+            </DetailRow>
+            <DetailRow label="Description">{category.description || '—'}</DetailRow>
+            <DetailRow label="Created">{formatDate(category.created_at) ?? '—'}</DetailRow>
+            <DetailRow label="Last updated">{formatDate(category.updated_at) ?? '—'}</DetailRow>
+          </div>
         </Card>
 
         <Card>
           <CardHeader title="Statistics" />
-          <CardBody className="grid grid-cols-2 gap-4">
+          <CardBody className="grid grid-cols-2 gap-2">
             <Stat label="Items" value={categoryItems.length} />
             <Stat label="Subcategories" value={childCategories.length} />
           </CardBody>
         </Card>
       </div>
 
-      <Card className="mt-6">
+      <Card className="mt-3">
         <CardHeader
           title="Subcategories"
           description={`${childCategories.length} direct children`}
           actions={
-            <ButtonLink href="/admin/categories/add" variant="secondary" size="sm" icon="plus">
+            <ButtonLink href="/admin/categories/add" variant="secondary" size="sm" icon={Plus}>
               Add
             </ButtonLink>
           }
         />
         {childCategories.length > 0 ? (
-          <CardBody className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <CardBody className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {childCategories.map((child) => (
               <Link
                 key={child.id}
                 href={`/admin/categories/${child.id}`}
-                className="rounded-xl border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-800/60"
+                className="rounded-md border border-line bg-surface-300 p-2 transition-colors hover:border-line-strong"
               >
-                <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-50">
-                  {child.name}
-                </p>
+                <p className="truncate text-xs font-medium text-fg">{child.name}</p>
                 {child.description && (
-                  <p className="truncate text-sm text-zinc-500 dark:text-zinc-400">
-                    {child.description}
-                  </p>
+                  <p className="truncate text-[11px] text-fg-subtle">{child.description}</p>
                 )}
               </Link>
             ))}
           </CardBody>
         ) : (
           <EmptyState
-            icon="tag"
+            icon={Tag}
             title="No subcategories"
             description="This category has no children yet."
           />
         )}
       </Card>
 
-      <Card className="mt-6">
+      <Card className="mt-3">
         <CardHeader
           title="Items in this category"
           description={`${categoryItems.length} items`}
           actions={
-            <ButtonLink href="/admin/items/add" variant="secondary" size="sm" icon="plus">
+            <ButtonLink href="/admin/items/add" variant="secondary" size="sm" icon={Plus}>
               Add item
             </ButtonLink>
           }
         />
         {itemsWithAvailability.length > 0 ? (
-          <CardBody className="space-y-2">
+          <div>
             {itemsWithAvailability.map((item) => (
               <Link
                 key={item.id}
                 href={`/admin/items/${item.id}`}
-                className="flex items-center justify-between gap-3 rounded-xl border border-zinc-200 p-3 transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-800/60"
+                className="flex items-center justify-between gap-3 border-b border-line px-3 py-2 transition-colors last:border-b-0 hover:bg-surface-300"
               >
-                <span className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-50">
-                  {item.name}
-                </span>
+                <span className="truncate text-xs font-medium text-fg">{item.name}</span>
                 <ItemQuantityBadge available={item.available} total={item.quantity} />
               </Link>
             ))}
-          </CardBody>
+          </div>
         ) : (
           <EmptyState
             title="No items"
             description="Nothing is assigned to this category yet."
             action={
-              <ButtonLink href="/admin/items/add" icon="plus" size="sm">
+              <ButtonLink href="/admin/items/add" icon={Plus} size="sm">
                 Add item
               </ButtonLink>
             }
@@ -184,9 +170,9 @@ export default async function CategoryViewPage({ params }: PageProps) {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800/60">
-      <p className="text-sm text-zinc-500 dark:text-zinc-400">{label}</p>
-      <p className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-50">{value}</p>
+    <div className="rounded-md border border-line bg-surface-300 p-2">
+      <p className="text-[11px] text-fg-subtle">{label}</p>
+      <p className="mt-1 font-mono text-xl font-semibold text-fg">{value}</p>
     </div>
   );
 }

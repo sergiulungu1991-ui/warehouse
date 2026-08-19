@@ -1,5 +1,5 @@
+import { RefreshCw, TriangleAlert } from 'lucide-react';
 import { Button } from './button';
-import { Icon } from './icon';
 
 type ErrorStateProps = {
   title?: string;
@@ -11,17 +11,17 @@ export function ErrorState({ title = 'Something went wrong', message, onRetry }:
   return (
     <div
       role="alert"
-      className="flex flex-col gap-3 rounded-xl border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-red-900 dark:bg-red-950"
+      className="m-3 flex flex-col gap-2 rounded-md border border-red-900/40 bg-red-950/30 p-3 sm:flex-row sm:items-center sm:justify-between"
     >
-      <div className="flex items-start gap-3">
-        <Icon name="alert" className="mt-0.5 h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
-        <div>
-          <p className="font-medium text-red-800 dark:text-red-200">{title}</p>
-          <p className="text-sm text-red-700 dark:text-red-300">{message}</p>
+      <div className="flex items-start gap-2">
+        <TriangleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-red-400" />
+        <div className="min-w-0">
+          <p className="text-xs font-medium text-red-300">{title}</p>
+          <p className="text-[11px] text-red-400/80">{message}</p>
         </div>
       </div>
       {onRetry && (
-        <Button variant="secondary" size="sm" icon="refresh" onClick={onRetry}>
+        <Button variant="secondary" size="sm" icon={RefreshCw} onClick={onRetry}>
           Retry
         </Button>
       )}

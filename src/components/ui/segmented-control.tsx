@@ -1,8 +1,12 @@
 'use client';
 
+import type { LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
 type SegmentedControlOption<T extends string> = {
   value: T;
   label: string;
+  icon?: LucideIcon;
 };
 
 type SegmentedControlProps<T extends string> = {
@@ -19,21 +23,28 @@ export function SegmentedControl<T extends string>({
   'aria-label': ariaLabel,
 }: SegmentedControlProps<T>) {
   return (
-    <div role="tablist" aria-label={ariaLabel} className="flex rounded-lg bg-zinc-200 p-1 dark:bg-zinc-800">
-      {options.map((option) => (
+    <div
+      role="tablist"
+      aria-label={ariaLabel}
+      className="flex h-8 shrink-0 items-center gap-0.5 rounded-md border border-line bg-surface-200 p-0.5"
+    >
+      {options.map(({ value: optionValue, label, icon: Icon }) => (
         <button
-          key={option.value}
+          key={optionValue}
           type="button"
           role="tab"
-          aria-selected={value === option.value}
-          onClick={() => onChange(option.value)}
-          className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-            value === option.value
-              ? 'bg-white text-zinc-900 shadow dark:bg-zinc-700 dark:text-zinc-50'
-              : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50'
-          }`}
+          aria-selected={value === optionValue}
+          title={label}
+          onClick={() => onChange(optionValue)}
+          className={cn(
+            'flex h-6 items-center gap-1.5 rounded px-2 text-xs font-medium transition-colors',
+            value === optionValue
+              ? 'bg-surface-400 text-fg'
+              : 'text-fg-subtle hover:bg-surface-300 hover:text-fg',
+          )}
         >
-          {option.label}
+          {Icon && <Icon className="h-3.5 w-3.5" />}
+          <span className={Icon ? 'hidden sm:inline' : undefined}>{label}</span>
         </button>
       ))}
     </div>

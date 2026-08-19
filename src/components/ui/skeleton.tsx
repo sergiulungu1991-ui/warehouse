@@ -1,34 +1,33 @@
+import { cn } from '@/lib/utils';
+
 export function Skeleton({ className = '' }: { className?: string }) {
-  return <div className={`animate-pulse rounded-md bg-zinc-200 dark:bg-zinc-800 ${className}`} />;
+  return <div className={cn('animate-pulse rounded bg-surface-400', className)} />;
 }
 
-export function SkeletonRows({ rows = 5, className = '' }: { rows?: number; className?: string }) {
+export function SkeletonRows({ rows = 8, className = '' }: { rows?: number; className?: string }) {
   return (
-    <div className={`space-y-3 ${className}`}>
+    <div className={cn('divide-y divide-line', className)}>
       {Array.from({ length: rows }, (_, index) => (
-        <div key={index} className="flex items-center gap-3">
-          <Skeleton className="h-10 w-10 shrink-0 rounded-lg" />
-          <Skeleton className="h-4 flex-1" />
-          <Skeleton className="hidden h-4 w-24 sm:block" />
-          <Skeleton className="h-6 w-10 rounded-full" />
+        <div key={index} className="flex items-center gap-2 px-3 py-2">
+          <Skeleton className="h-8 w-8 shrink-0" />
+          <Skeleton className="h-3 flex-1" />
+          <Skeleton className="hidden h-3 w-24 sm:block" />
+          <Skeleton className="h-4 w-12" />
         </div>
       ))}
     </div>
   );
 }
 
-export function SkeletonCards({ count = 8 }: { count?: number }) {
+export function SkeletonCards({ count = 12 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-2 p-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
       {Array.from({ length: count }, (_, index) => (
-        <div
-          key={index}
-          className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-800"
-        >
+        <div key={index} className="overflow-hidden rounded-md border border-line">
           <Skeleton className="aspect-square rounded-none" />
-          <div className="space-y-2 p-4">
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-3 w-1/2" />
+          <div className="space-y-1.5 p-2">
+            <Skeleton className="h-3 w-3/4" />
+            <Skeleton className="h-2.5 w-1/2" />
           </div>
         </div>
       ))}

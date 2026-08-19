@@ -1,4 +1,5 @@
-import { Card, CardBody, CardHeader } from '@/components/ui/card';
+import { Calendar } from 'lucide-react';
+import { Card, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ItemRentalRow } from './item-rental-row';
@@ -26,19 +27,19 @@ function RentalGroup({
   tone: 'warning' | 'neutral';
 }) {
   return (
-    <Card className="mt-6">
+    <Card>
       <CardHeader
         title={title}
         actions={<Badge tone={rentals.length ? tone : 'neutral'}>{rentals.length}</Badge>}
       />
       {rentals.length > 0 ? (
-        <CardBody className="space-y-2">
+        <div>
           {rentals.map((rental) => (
             <ItemRentalRow key={rental.id} rental={rental} />
           ))}
-        </CardBody>
+        </div>
       ) : (
-        <EmptyState icon="calendar" title={emptyTitle} description={emptyDescription} />
+        <EmptyState icon={Calendar} title={emptyTitle} description={emptyDescription} />
       )}
     </Card>
   );
@@ -49,7 +50,7 @@ export function ItemRentalSections({ rentals }: ItemRentalSectionsProps) {
   const history = rentals.filter((rental) => CLOSED_RENTAL_STATUSES.includes(rental.status));
 
   return (
-    <>
+    <div className="space-y-3">
       <RentalGroup
         title="Currently rented"
         rentals={active}
@@ -64,6 +65,6 @@ export function ItemRentalSections({ rentals }: ItemRentalSectionsProps) {
         emptyTitle="No past rentals"
         emptyDescription="Returned and canceled rentals will show up here."
       />
-    </>
+    </div>
   );
 }

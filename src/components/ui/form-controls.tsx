@@ -1,10 +1,11 @@
 'use client';
 
 import type { InputHTMLAttributes, SelectHTMLAttributes } from 'react';
-import { Icon } from './icon';
+import { ChevronDown, Search } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export const CONTROL_CLASS =
-  'w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 outline-none transition-colors placeholder:text-zinc-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50';
+  'h-8 w-full rounded-md border border-line bg-surface-200 px-2.5 text-xs text-fg outline-none transition-colors placeholder:text-fg-subtle hover:border-line-strong focus:border-accent focus:ring-1 focus:ring-accent/30';
 
 type SearchInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> & {
   value: string;
@@ -13,16 +14,13 @@ type SearchInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' |
 
 export function SearchInput({ value, onValueChange, className = '', ...props }: SearchInputProps) {
   return (
-    <div className={`relative ${className}`}>
-      <Icon
-        name="search"
-        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400"
-      />
+    <div className={cn('relative', className)}>
+      <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-subtle" />
       <input
-        type="search"
+        type="text"
         value={value}
         onChange={(event) => onValueChange(event.target.value)}
-        className={`${CONTROL_CLASS} pl-9`}
+        className={cn(CONTROL_CLASS, 'pl-8')}
         {...props}
       />
     </div>
@@ -36,13 +34,18 @@ type SelectProps = Omit<SelectHTMLAttributes<HTMLSelectElement>, 'onChange' | 'v
 
 export function Select({ value, onValueChange, className = '', children, ...props }: SelectProps) {
   return (
-    <select
-      value={value}
-      onChange={(event) => onValueChange(event.target.value)}
-      className={`${CONTROL_CLASS} ${className}`}
-      {...props}
-    >
-      {children}
-    </select>
+    <div className={cn('relative', className)}>
+      <select
+        value={value}
+        onChange={(event) => onValueChange(event.target.value)}
+        className={cn(CONTROL_CLASS, 'cursor-pointer appearance-none pr-7')}
+        {...props}
+      >
+        {children}
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-subtle" />
+    </div>
   );
 }
+
+

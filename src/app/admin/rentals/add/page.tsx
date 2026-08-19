@@ -21,12 +21,8 @@ export default async function AddRentalPage({ searchParams }: PageProps) {
   const initialLines = itemId ? [{ itemId, quantity: 1, returnedQuantity: 0 }] : [];
 
   return (
-    <PageContainer>
-      <PageHeader
-        title="Add rental"
-        description="Register equipment leaving the warehouse"
-        breadcrumbs={[{ label: 'Rentals', href: '/admin/rentals' }, { label: 'Add' }]}
-      />
+    <PageContainer narrow>
+      <PageHeader title="Add rental" description="Register equipment leaving the warehouse" />
       <RentalForm items={items ?? []} initialLines={initialLines} />
     </PageContainer>
   );

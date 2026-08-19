@@ -1,28 +1,32 @@
 import Link from 'next/link';
-import { Icon, type IconName } from '@/components/ui/icon';
-import { TONE_SURFACES, type SurfaceTone } from '@/components/ui/tone';
+import { ChevronRight, type LucideIcon } from 'lucide-react';
 
 type QuickActionCardProps = {
   href: string;
   title: string;
   description: string;
-  icon: IconName;
-  tone: SurfaceTone;
+  icon: LucideIcon;
 };
 
-export function QuickActionCard({ href, title, description, icon, tone }: QuickActionCardProps) {
+export function QuickActionCard({
+  href,
+  title,
+  description,
+  icon: IconComponent,
+}: QuickActionCardProps) {
   return (
     <Link
       href={href}
-      className="flex items-center gap-4 rounded-xl border border-zinc-200 bg-white p-4 transition-colors hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700"
+      className="group flex items-center gap-3 rounded-md border border-line bg-surface-200 p-3 transition-colors hover:border-line-strong hover:bg-surface-300"
     >
-      <div className={`rounded-lg p-2 ${TONE_SURFACES[tone]}`}>
-        <Icon name={icon} />
-      </div>
-      <div className="min-w-0">
-        <p className="font-medium text-zinc-900 dark:text-zinc-50">{title}</p>
-        <p className="truncate text-sm text-zinc-600 dark:text-zinc-400">{description}</p>
-      </div>
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-line bg-surface-300 text-fg-muted group-hover:text-accent-text">
+        <IconComponent className="h-3.5 w-3.5" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-xs font-medium text-fg">{title}</span>
+        <span className="block truncate text-[11px] text-fg-subtle">{description}</span>
+      </span>
+      <ChevronRight className="h-3.5 w-3.5 shrink-0 text-fg-subtle" />
     </Link>
   );
 }

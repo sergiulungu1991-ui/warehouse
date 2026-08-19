@@ -27,15 +27,8 @@ export default async function EditCategoryPage({ params }: PageProps) {
   if (!category.data) notFound();
 
   return (
-    <PageContainer>
-      <PageHeader
-        title={`Edit ${category.data.name}`}
-        breadcrumbs={[
-          { label: 'Categories', href: '/admin/categories' },
-          { label: category.data.name, href: `/admin/categories/${id}` },
-          { label: 'Edit' },
-        ]}
-      />
+    <PageContainer narrow>
+      <PageHeader title={`Edit ${category.data.name}`} />
       <CategoryForm categories={categories.data ?? []} category={category.data} />
     </PageContainer>
   );

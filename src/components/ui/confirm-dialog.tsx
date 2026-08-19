@@ -10,8 +10,9 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { TriangleAlert } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Button } from './button';
-import { Icon } from './icon';
 
 type ConfirmOptions = {
   title: string;
@@ -67,39 +68,36 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
             aria-labelledby="confirm-title"
             onClick={(event) => event.stopPropagation()}
             style={{ animation: 'dialog-in 150ms ease-out' }}
-            className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
+            className="w-full max-w-sm rounded-md border border-line bg-surface-200 p-4 shadow-xl shadow-black/40"
           >
-            <div className="flex items-start gap-4">
+            <div className="flex items-start gap-3">
               <div
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
+                className={cn(
+                  'flex h-7 w-7 shrink-0 items-center justify-center rounded-md border',
                   pending.destructive
-                    ? 'bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-400'
-                    : 'bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-400'
-                }`}
+                    ? 'border-red-900/40 bg-red-950/40 text-red-400'
+                    : 'border-line bg-surface-300 text-fg-muted',
+                )}
               >
-                <Icon name="alert" />
+                <TriangleAlert className="h-3.5 w-3.5" />
               </div>
               <div className="min-w-0">
-                <h2
-                  id="confirm-title"
-                  className="text-base font-semibold text-zinc-900 dark:text-zinc-50"
-                >
+                <h2 id="confirm-title" className="text-xs font-medium text-fg">
                   {pending.title}
                 </h2>
                 {pending.description && (
-                  <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-                    {pending.description}
-                  </p>
+                  <p className="mt-0.5 text-[11px] text-fg-muted">{pending.description}</p>
                 )}
               </div>
             </div>
 
-            <div className="mt-6 flex justify-end gap-3">
-              <Button variant="secondary" onClick={() => close(false)}>
+            <div className="mt-4 flex justify-end gap-1.5">
+              <Button variant="secondary" size="sm" onClick={() => close(false)}>
                 {pending.cancelLabel ?? 'Cancel'}
               </Button>
               <Button
                 ref={confirmButtonRef}
+                size="sm"
                 variant={pending.destructive ? 'danger' : 'primary'}
                 onClick={() => close(true)}
               >

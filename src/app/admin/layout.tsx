@@ -1,7 +1,8 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { AdminSidebar } from '@/components/admin/admin-sidebar';
+import { AppSidebar } from '@/components/admin/app-sidebar';
+import { ModuleSidebar } from '@/components/admin/module-sidebar';
 import { AdminTopbar } from '@/components/admin/admin-topbar';
 import { useSidebar } from '@/hooks/use-sidebar';
 
@@ -9,15 +10,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const { isCollapsed, isMobileOpen, toggleCollapsed, toggleMobile, closeMobile } = useSidebar();
 
   return (
-    <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="flex h-screen overflow-hidden bg-surface-100">
       {isMobileOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
-          onClick={closeMobile}
-        />
+        <div className="fixed inset-0 z-30 bg-black/60 lg:hidden" onClick={closeMobile} />
       )}
 
-      <AdminSidebar
+      <AppSidebar />
+
+      <ModuleSidebar
         isCollapsed={isCollapsed}
         isMobileOpen={isMobileOpen}
         onToggleCollapsed={toggleCollapsed}
@@ -26,7 +26,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <AdminTopbar onOpenMenu={toggleMobile} />
-        <main className="flex-1">{children}</main>
+        <main className="min-h-0 flex-1 overflow-hidden">{children}</main>
       </div>
     </div>
   );

@@ -1,25 +1,25 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Eye, Pencil, Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
-import { IconButton, IconButtonLink, RowActions } from '@/components/ui/icon-button';
+import { RowActionsMenu, type RowAction } from '@/components/ui/row-actions-menu';
 import { useConfirmDelete } from '@/components/ui/confirm-dialog';
 import { useToast } from '@/components/ui/toast';
 
 type RentalRowActionsProps = {
   rentalId: string;
   renterName: string;
+  onDeleted?: () => void;
 };
 
-export function RentalRowActions({ rentalId, renterName }: RentalRowActionsProps) {
-  const router = useRouter();
+export function RentalRowActions({ rentalId, renterName, onDeleted }: RentalRowActionsProps) {
   const confirmDelete = useConfirmDelete();
   const toast = useToast();
   const [deleting, setDeleting] = useState(false);
 
   async function handleDelete() {
-    if (!(await confirmDelete(`the rental of ${renterName}`))) return;
+    if (deleting || !(await confirmDelete(`the rental of ${renterName}`))) return;
 
     setDeleting(true);
     // Positions are removed first: the FK would otherwise block the delete
@@ -33,20 +33,14 @@ export function RentalRowActions({ rentalId, renterName }: RentalRowActionsProps
     }
 
     toast.success('Rental deleted');
-    router.refresh();
+    onDeleted?.();
   }
 
-  return (
-    <RowActions>
-      <IconButtonLink href={`/admin/rentals/${rentalId}`} icon="eye" label="View rental" />
-      <IconButtonLink href={`/admin/rentals/${rentalId}/edit`} icon="edit" label="Edit rental" />
-      <IconButton
-        icon="trash"
-        label="Delete rental"
-        tone="danger"
-        onClick={handleDelete}
-        disabled={deleting}
-      />
-    </RowActions>
-  );
+  const actions: RowAction[] = [
+    { label: 'View', icon: Eye, href: `/admin/rentals/${rentalId}` },
+    { label: 'Edit', icon: Pencil, href: `/admin/rentals/${rentalId}/edit` },
+    { label: 'Delete', icon: Trash2, onSelect: handleDelete, tone: 'danger', separated: true },
+  ];
+
+  return <RowActionsMenu actions={actions} />;
 }

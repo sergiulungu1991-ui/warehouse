@@ -13,12 +13,8 @@ export default async function AddCategoryPage() {
   const { data: categories } = await supabase.from('categories').select('*');
 
   return (
-    <PageContainer>
-      <PageHeader
-        title="Add category"
-        description="Create a new category or subcategory"
-        breadcrumbs={[{ label: 'Categories', href: '/admin/categories' }, { label: 'Add' }]}
-      />
+    <PageContainer narrow>
+      <PageHeader title="Add category" description="Create a new category or subcategory" />
       <CategoryForm categories={categories ?? []} />
     </PageContainer>
   );

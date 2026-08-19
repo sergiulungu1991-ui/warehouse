@@ -1,7 +1,8 @@
 'use client';
 
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
-import { Icon, type IconName } from './icon';
+import { Check, RefreshCw, TriangleAlert, X, type LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type ToastTone = 'success' | 'error' | 'info';
 
@@ -11,18 +12,18 @@ type Toast = {
   message: string;
 };
 
-const TONE_STYLES: Record<ToastTone, { className: string; icon: IconName }> = {
+const TONE_STYLES: Record<ToastTone, { className: string; icon: LucideIcon }> = {
   success: {
-    className: 'border-green-200 bg-green-50 text-green-900 dark:border-green-900 dark:bg-green-950 dark:text-green-100',
-    icon: 'check',
+    className: 'border-accent/40 bg-accent-surface text-accent-text',
+    icon: Check,
   },
   error: {
-    className: 'border-red-200 bg-red-50 text-red-900 dark:border-red-900 dark:bg-red-950 dark:text-red-100',
-    icon: 'alert',
+    className: 'border-red-900/50 bg-red-950/70 text-red-300',
+    icon: TriangleAlert,
   },
   info: {
-    className: 'border-zinc-200 bg-white text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50',
-    icon: 'refresh',
+    className: 'border-line bg-surface-300 text-fg',
+    icon: RefreshCw,
   },
 };
 
@@ -60,26 +61,32 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div
         aria-live="polite"
-        className="pointer-events-none fixed bottom-4 right-4 z-100 flex w-[calc(100vw-2rem)] max-w-sm flex-col gap-2"
+        className="pointer-events-none fixed bottom-3 right-3 z-100 flex w-[calc(100vw-1.5rem)] max-w-xs flex-col gap-1.5"
       >
-        {toasts.map((item) => (
-          <div
-            key={item.id}
-            className={`pointer-events-auto flex items-start gap-3 rounded-xl border p-3 shadow-lg ${TONE_STYLES[item.tone].className}`}
-            style={{ animation: 'toast-in 200ms ease-out' }}
-          >
-            <Icon name={TONE_STYLES[item.tone].icon} className="mt-0.5 h-4 w-4 shrink-0" />
-            <p className="flex-1 text-sm">{item.message}</p>
-            <button
-              type="button"
-              onClick={() => dismiss(item.id)}
-              aria-label="Dismiss notification"
-              className="shrink-0 opacity-60 transition-opacity hover:opacity-100"
+        {toasts.map((item) => {
+          const ToneIcon = TONE_STYLES[item.tone].icon;
+          return (
+            <div
+              key={item.id}
+              className={cn(
+                'pointer-events-auto flex items-start gap-2 rounded-md border px-2.5 py-2 shadow-lg shadow-black/30',
+                TONE_STYLES[item.tone].className,
+              )}
+              style={{ animation: 'toast-in 200ms ease-out' }}
             >
-              <Icon name="close" className="h-4 w-4" />
-            </button>
-          </div>
-        ))}
+              <ToneIcon className="mt-px h-3.5 w-3.5 shrink-0" />
+              <p className="flex-1 text-xs">{item.message}</p>
+              <button
+                type="button"
+                onClick={() => dismiss(item.id)}
+                aria-label="Dismiss notification"
+                className="shrink-0 opacity-60 transition-opacity hover:opacity-100"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          );
+        })}
       </div>
     </ToastContext>
   );
